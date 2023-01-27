@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "eudp-clustering"
+name = "eudpDashboard"
 version = "0.1.0"
 description = ""
 authors = ["MLS <mls@damvad.com>"]
 readme = "README.md"
-packages = [{include = "eudp_clustering"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
