@@ -112,7 +112,7 @@ class EUDP:
         temp = self.df_out.rename(columns={
             'topics_name': 'Navn på emne',
             'Subsidy_total': 'Tilskud'
-        })
+        }).sort_values('Navn på emne')
 
         fig = px.strip(
             temp,
@@ -134,11 +134,37 @@ class EUDP:
 
         return fig
     
+    def clusters_subsidy_sum(self):
+        temp = self.df_out.groupby('topics_name').sum()['Subsidy_total'].reset_index()
+
+        temp = temp.rename(columns={
+            'topics_name': 'Navn på emne',
+            'Subsidy_total': 'Tilskud samlet'
+        }).sort_values('Navn på emne')
+
+        fig = px.bar(
+            temp,
+            x = 'Tilskud samlet',
+            y = 'Navn på emne',
+            color='Navn på emne',
+            width=800, 
+            height=600,
+            color_discrete_map=self.color_dict,
+            template='plotly_white', 
+        )
+        fig.update_layout(
+            showlegend=False,
+            xaxis_title='Tilskud samlet (mio. kr)',
+            yaxis_title=None
+        )
+
+        return fig
+    
     def clusters_total_financing(self):
         temp = self.df_out.rename(columns={
             'topics_name': 'Navn på emne',
             'Total_financing': 'Samlet beløb'
-        })
+        }).sort_values('Navn på emne')
 
         fig = px.strip(
             temp,
@@ -147,6 +173,32 @@ class EUDP:
             color='Navn på emne',
             stripmode='overlay',
             hover_data=['text_br','Bevillingsår','Fælles overordnet teknologiområde','Ansvarlig virksomhed','Fokusområder EUDP'], 
+            width=800, 
+            height=600,
+            color_discrete_map=self.color_dict,
+            template='plotly_white', 
+        )
+        fig.update_layout(
+            showlegend=False,
+            xaxis_title='Samlet beløb (mio. kr)',
+            yaxis_title=None
+        )
+
+        return fig
+    
+    def clusters_total_financing_sum(self):
+        temp = self.df_out.groupby('topics_name').sum()['Total_financing'].reset_index()
+
+        temp = temp.rename(columns={
+            'topics_name': 'Navn på emne',
+            'Total_financing': 'Samlet beløb'
+        }).sort_values('Navn på emne')
+
+        fig = px.bar(
+            temp,
+            x = 'Samlet beløb',
+            y = 'Navn på emne',
+            color='Navn på emne',
             width=800, 
             height=600,
             color_discrete_map=self.color_dict,

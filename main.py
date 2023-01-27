@@ -30,9 +30,32 @@ st.plotly_chart(
 )
 
 st.subheader("Hvilke emner har fået mest tilskud?")
-st.plotly_chart(
-    eudp.clusters_subsidy()
+option_tilskud = st.selectbox(
+    'Vis tilskud for projekter eller samlet',
+    ('Projekter','Samlet')
 )
+if option_tilskud == 'Projekter':
+    st.plotly_chart(
+        eudp.clusters_subsidy()
+    )
+else:
+    st.plotly_chart(
+        eudp.clusters_subsidy_sum()
+    )
+
+st.subheader("Hvilke emner har størst budget? (Inkl. EUDP-tilskud, egenfinansiering og anden finansiering)")
+option_budget = st.selectbox(
+    'Vis budget for projekter eller samlet',
+    ('Projekter', 'Samlet')
+)
+if option_budget == 'Projekter':
+    st.plotly_chart(
+        eudp.clusters_total_financing()
+    )
+else:
+    st.plotly_chart(
+        eudp.clusters_total_financing_sum()
+    )
 
 
 st.subheader("Hvem er de ansvarlige virksomheder inden for hvert emne?")
