@@ -24,7 +24,7 @@ class EUDP:
 
 
 
-    def cluster_documents(self, color_var = 'topics_name', add_labels = True):
+    def cluster_documents(self, color_var = 'topics_name', add_labels = True, show_legend = False):
         if color_var == 'topics_name':
             fig = px.scatter(self.df_out, 
                 x='x', 
@@ -51,7 +51,7 @@ class EUDP:
 
         fig.update_traces(marker={'size': 5})
         fig.update_layout(
-            showlegend=False,
+            showlegend=show_legend,
             xaxis_title=None,
             yaxis_title=None
         )

@@ -36,10 +36,15 @@ label_bool = st.checkbox(
     'Tilføj navne på clusters?', 
     value=True
 )
+legend_bool = st.checkbox(
+    'Tilføj dataforklaring?', 
+    value=False
+) 
 st.plotly_chart(
     eudp.cluster_documents(
         color_var=color_var_label_dict.get(color_var_option),
-        add_labels=label_bool
+        add_labels=label_bool,
+        show_legend=legend_bool
     )
 )
 
