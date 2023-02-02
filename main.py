@@ -10,19 +10,54 @@ eudp = EUDP()
 
 
 
-st.markdown("Her kan tilføjes en lille beskrivelse")
+st.markdown(
+    """
+    Dette dashboard viser en explorativ mini-analyse til at undersøge hvilke undertemaer, der findes i de EUDP-støttede projekter. 
+    Der er kun medtaget projekter, som har slut-år i perioden 2015-2022, og IEA-projekter er udeladt. 
+    \n
+    For at undersøge hvilke emner, der findes, er lavet en cluster-analyse, som baseret på tekst fra projekttitel, intro-tekst, og evt. beskrivelse.
+    Der bruges en unsupervised sprogmodel til at knytte projekterne sammen i grupper, der er sprogligt ens baseret på denne tekst. 
 
-st.subheader("Hvilke emner har projekterne, som EUDP har støttet?")
-st.plotly_chart(
-    eudp.cluster_documents()
+    -- Amsterdam Data Collective, 2023
+    """
 )
 
+st.subheader("Hvilke emner har projekterne, som EUDP har støttet?")
+color_var_option = st.selectbox(
+    'Hvad skal projekterne farves efter?',
+    ('Clusters','Fælles overordnet teknologiområde')
+)
+color_var_label_dict = {
+    'Clusters': 'topics_name',
+    'Fælles overordnet teknologiområde': 'Fælles overordnet teknologiområde'
+}
+
+label_bool = st.checkbox(
+    'Tilføj navne på clusters?', 
+    value=True
+)
+st.plotly_chart(
+    eudp.cluster_documents(
+        color_var=color_var_label_dict.get(color_var_option),
+        add_labels=label_bool
+    )
+)
 
 st.subheader("Antal projekter inden for hvert emne")
 st.plotly_chart(
     eudp.cluster_freqs()
 )
 
+st.subheader('Hvad ligger inden for "Ikke kategoriseret"?')
+groupby_var_option = st.selectbox(
+    'Hvilken variabel skal grupperes?',
+    ('Fælles overordnet teknologiområde','Bevillingsår','Slut (år)','Fokusområder EUDP')
+)
+st.plotly_chart(
+    eudp.explore_noise_category(
+        groupby_var=groupby_var_option
+    )
+)
 
 st.subheader("Hvilke emner er støttet over tid?")
 st.plotly_chart(
