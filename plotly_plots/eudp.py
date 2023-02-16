@@ -1,12 +1,14 @@
 import pandas as pd
 import plotly.express as px
 import random
+import re
 
 
 class EUDP:
 
     def __init__(self):
         self.df_out =  pd.read_csv('data/data_with_topics.csv')
+        self.df_out['Ansvarlig virksomhed'] = self.df_out['Ansvarlig virksomhed'].apply(self.fix_company_names)
 
         self.color_dict = {}
         self.unique_topics = list(self.df_out['topics_name'].unique())
@@ -22,7 +24,23 @@ class EUDP:
                     new_i = random.randint(0,len(px.colors.qualitative.Dark24))
                     self.color_dict[self.unique_topics[i]] = px.colors.qualitative.Dark24[new_i]
 
-
+    
+    def fix_company_names(self, company_name: str) -> str:
+        if any([i in company_name for i in ['DTU', 'Danmarks Tekniske Universitet','Technical University of Denmark']]):
+            return 'Danmarks Tekniske Universitet (DTU)'
+        elif 'SIEMENS WIND POWER A/S' in company_name:
+            return 'Siemens Gamesa Renuable Energy A/S'
+        elif 'AAU' in company_name:
+            return 'Aalborg Universitet' 
+        elif 'Rambøll' in company_name:
+            return 'RAMBØLL DANMARK A/S'
+        elif 'Mærsk' in company_name:
+            return 'A.P. MØLLER - MÆRSK A/S'
+        else:
+            parenthesis = re.findall('\(.+\)', company_name)
+            for match in parenthesis:
+                company_name = company_name.replace(match, '')
+            return company_name.strip()
 
     def cluster_documents(self, color_var = 'topics_name', add_labels = True, show_legend = False):
         if color_var == 'topics_name':

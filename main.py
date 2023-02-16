@@ -105,9 +105,12 @@ options = st.multiselect(
     list(eudp.df_out['topics_name'].unique()),
 )
 
+sort_by = st.selectbox("Sortér efter:", ['Samlet tilskud','Antal projekter'])
+
 temp = eudp.df_out[eudp.df_out['topics_name'].apply(lambda x: x in options)]
 
-table = temp['Ansvarlig virksomhed'].value_counts().reset_index().rename(columns={'Ansvarlig virksomhed': 'Antal'}).rename(columns={'index': 'Ansvarlig virksomhed'})
+table = temp.groupby('Ansvarlig virksomhed')['Subsidy_total'].agg(['sum','count']).reset_index().rename(columns={'sum': 'Samlet tilskud', 'count': 'Antal projekter'})
+table = table.sort_values(sort_by, ascending=False)
 
 hide_table_row_index = """
             <style>
